@@ -1,0 +1,7 @@
+{
+  "name": "canine-phosphorus-calculator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "犬用磷靜脈輸注數學換算工具",
+  "scripts": { "test": "node --test tests/calculator.test.cjs" }
+}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="犬用磷靜脈輸注數學計算器：配製體積、濃度、輸注時間與反向驗算。僅供數學換算，不替代獸醫處方。">
+  <meta name="theme-color" content="#164e45">
+  <title>犬用磷（P）靜脈輸注計算器</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23164e45'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='sans-serif' font-size='42' font-weight='bold' fill='white'%3EP%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./calculator.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <header class="topbar"><span class="brand"><span class="brand-icon" aria-hidden="true">P</span> 犬用輸注換算</span><span class="tag">純數學計算工具</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">CANINE PHOSPHORUS CALCULATOR</p><h1>磷（P）靜脈輸注計算器</h1><p>輸入處方條件，即時換算配製體積，並反向核對目標速率。</p></div>
+    <aside class="safety" aria-labelledby="safety-title"><h2 id="safety-title">臨床安全提醒</h2><p>此工具只執行數學換算，<strong>不替代獸醫處方</strong>。實際輸注前須由獸醫確認製劑濃度、磷鹽種類、稀釋液相容性、最大安全輸注速率，以及血磷、血鈣、腎功能等。計算通過不代表臨床安全；本工具不判定安全劑量。</p></aside>
+    <noscript><p class="safety">請啟用 JavaScript 才能使用計算器。目前未進行任何計算。</p></noscript>
+    <div class="workspace">
+      <section class="panel inputs" aria-labelledby="input-title">
+        <div class="section-heading"><h2 id="input-title"><span class="step">01</span> 輸入條件</h2><span>所有欄位皆必填</span></div>
+        <form id="calculator" novalidate>
+          <div class="field"><label for="x">狗體重 <span>X · kg</span></label><input id="x" name="x" type="number" inputmode="decimal" min="0" step="any" required placeholder="例如 10" aria-describedby="x-error"><span class="field-error" id="x-error"></span></div>
+          <div class="field"><label for="y">目標磷輸注速率 <span>Y · mmol/kg/hr</span></label><input id="y" name="y" type="number" inputmode="decimal" min="0" step="any" required placeholder="依獸醫處方輸入" aria-describedby="rate-hint y-error"><p class="hint" id="rate-hint">常用輸入 0.02–0.06，為使用者提供的範圍，並非安全劑量建議。</p><span class="field-error" id="y-error"></span></div>
+          <div class="field"><label for="p">磷原液濃度 <span>P · mmol/mL</span></label><input id="p" name="p" type="number" inputmode="decimal" min="0" step="any" required value="3" aria-describedby="stock-hint p-error"><p class="hint" id="stock-hint">預設 3，可修改；請以實際製劑標示核對。</p><span class="field-error" id="p-error"></span></div>
+          <div class="field"><label for="r">輸液速率 <span>R · mL/hr</span></label><input id="r" name="r" type="number" inputmode="decimal" min="0" step="any" required placeholder="例如 3" aria-describedby="r-error"><span class="field-error" id="r-error"></span></div>
+          <div class="field"><label for="z">最終總液量 <span>Z · mL</span></label><input id="z" name="z" type="number" inputmode="decimal" min="0" step="any" required placeholder="例如 20" aria-describedby="volume-hint z-error"><p class="hint" id="volume-hint"><strong>已包含磷原液體積</strong>，不是先取此體積再加入磷原液。</p><span class="field-error" id="z-error"></span></div>
+          <div class="actions"><button type="button" id="example">載入計算範例</button><button type="button" class="secondary" id="clear">清空重填</button></div>
+        </form>
+      </section>
+      <section class="panel results" aria-labelledby="result-title">
+        <div class="section-heading"><h2 id="result-title"><span class="step">02</span> 計算結果</h2><span id="state">等待輸入</span></div>
+        <p id="message" class="message" role="status" aria-live="polite">請填寫所有條件，完成後自動計算。</p>
+        <div id="result-content" hidden>
+          <div class="mix-card"><p class="eyebrow">配製體積 · 未取整數值</p><div class="mix-grid"><div><h3>磷原液</h3><p class="big"><output id="stock">—</output><span>mL</span></p></div><span class="plus" aria-hidden="true">+</span><div><h3>其他輸液</h3><p class="big"><output id="diluent">—</output><span>mL</span></p></div></div><p class="total-line">配製後總液量 <strong><output id="final-volume">—</output> mL</strong></p></div>
+          <p class="hint rounding">顯示最多 6 位小數；微小數值使用科學記號。計算與驗算皆使用未四捨五入數值。顯示值不代表器材可量取精度。</p>
+          <dl class="metrics"><div><dt>每小時所需磷</dt><dd><output id="hourly">—</output> <span>mmol/hr</span></dd></div><div><dt>配製後磷濃度</dt><dd><output id="concentration">—</output> <span>mmol/mL</span></dd></div><div><dt>所需磷總量</dt><dd><output id="total">—</output> <span>mmol</span></dd></div><div><dt>預計輸注時間</dt><dd><output id="duration">—</output> <span>hr</span></dd></div></dl>
+          <div class="verification"><h3>✓ 反向驗算通過</h3><p>實際輸注速率 <strong><output id="actual">—</output> mmol/kg/hr</strong></p><p>目標速率 <output id="target">—</output> mmol/kg/hr</p><p class="hint">以未取整的配製體積驗算；不代表實際量取或臨床安全已確認。</p><details><summary>查看計算精度</summary><p>絕對差：<output id="difference">—</output><br>允許浮點誤差：<output id="tolerance">—</output></p></details></div>
+          <p class="notice" id="rate-notice" hidden></p>
+        </div>
+        <div id="empty" class="empty"><span aria-hidden="true">P</span><h3>從處方條件開始</h3><p>完整填寫左側／上方 5 個欄位。<br>或載入範例，查看換算方式。</p></div>
+      </section>
+    </div>
+    <details class="panel formulas"><summary>計算公式與單位說明</summary><div><p>X：體重（kg） · Y：目標速率（mmol/kg/hr） · P：磷原液濃度（mmol/mL） · R：輸液速率（mL/hr） · Z：最終總液量（mL）</p><ol><li>每小時所需磷 = X × Y（mmol/hr）</li><li>配製後磷濃度 = X × Y ÷ R（mmol/mL）</li><li>總磷量 = X × Y ÷ R × Z（mmol）</li><li>磷原液體積 V = X × Y ÷ R × Z ÷ P（mL）</li><li>其他輸液體積 = Z − V（mL）</li><li>輸注時間 = Z ÷ R（hr）</li><li>反向驗算 =（V × P ÷ Z）× R ÷ X（mmol/kg/hr）</li></ol><p>例如：10 kg、0.06 mmol/kg/hr、原液 3 mmol/mL、3 mL/hr、最終 20 mL → 磷原液約 1.333 mL ＋ 其他輸液約 18.667 mL。</p></div></details>
+    <footer>僅供數學換算 · 所有輸入在本機瀏覽器計算，不儲存或傳送輸入資料。<br>版本 1.0.0</footer>
+  </main>
+</body>
+</html>
