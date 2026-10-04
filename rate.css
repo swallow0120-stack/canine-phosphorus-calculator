@@ -1,0 +1,13 @@
+.rate-field{border:0;padding:0;min-width:0;margin-inline:0}
+.rate-field legend{width:100%;padding:0;margin-bottom:10px;font-weight:650}
+.rate-field legend>span{float:right;font-size:.8rem;color:#65776d;font-weight:450;margin-top:3px}
+.rate-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.rate-option{position:relative;display:block;margin:0;cursor:pointer}
+.rate-option input{position:absolute;width:1px;height:1px;min-height:0;padding:0;margin:0;opacity:0;overflow:hidden}
+.rate-option>span{display:flex;align-items:center;justify-content:center;min-height:56px;border:1px solid #a6b9ad;border-radius:9px;background:#fcfdfb;color:#244d3e;font-size:1.1rem;font-weight:650;font-variant-numeric:tabular-nums}
+.rate-option:hover>span{background:#edf5ef;border-color:#367d65}
+.rate-option input:checked+span{background:#164e45;color:#fff;border-color:#164e45;box-shadow:inset 0 -3px 0 #91c8af}
+.rate-option input:focus-visible+span{outline:3px solid #3c8c79;outline-offset:3px}
+.rate-field[aria-invalid=true] .rate-option>span{border-color:#ba3834}
+.rate-selection{font-size:.84rem;color:#345f4a;margin:8px 0 0;font-weight:600}
+@media(max-width:380px){.rate-options{gap:5px}.rate-option>span{font-size:1rem}.rate-field legend>span{font-size:.75rem}}

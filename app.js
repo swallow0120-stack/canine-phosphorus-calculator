@@ -3,9 +3,24 @@ const { calculate, format } = PhosphorusCalculator;
 const keys = ['x', 'y', 'p', 'r', 'z'];
 const byId = id => document.getElementById(id);
 let touched = false;
+function setInputs(values) {
+  for (const key of keys) {
+    if (key === 'y') {
+      document.querySelectorAll('input[name="y"]').forEach(radio => {
+        radio.checked = radio.value === String(values.y);
+      });
+    } else byId(key).value = values[key];
+  }
+}
 function update() {
-  const input = Object.fromEntries(keys.map(key => [key, byId(key).value]));
+  const input = Object.fromEntries(keys.map(key => [key, key === 'y'
+    ? document.querySelector('input[name="y"]:checked')?.value || ''
+    : byId(key).value]));
   const result = calculate(input);
+  if (result.errors?.y && !input.y) result.errors.y = '目標磷輸注速率：請選擇一個速率。';
+  byId('rate-selection').textContent = input.y
+    ? `已選擇 ${input.y} mmol/kg/hr`
+    : '請依獸醫處方點選速率';
   for (const key of keys) {
     const error = result.errors?.[key] || '';
     byId(key).setAttribute('aria-invalid', String(Boolean(error && touched)));
@@ -29,8 +44,6 @@ function update() {
   byId('difference').textContent = result.difference.toExponential(3);
   byId('tolerance').textContent = result.tolerance.toExponential(3);
   const notes = [];
-  if (result.values.y === 0) notes.push('目前目標速率為 0，因此不含磷補充量。');
-  else if (result.values.y < 0.02 || result.values.y > 0.06) notes.push('目標速率超出使用者提供的常用輸入範圍 0.02–0.06。此範圍不代表安全界線，請核對獸醫處方。');
   if (result.diluent === 0) notes.push('其他輸液體積為 0：僅表示數學上總量相符，不代表原液可直接輸注。');
   byId('rate-notice').hidden = notes.length === 0;
   byId('rate-notice').textContent = notes.join(' ');
@@ -39,11 +52,11 @@ byId('calculator').addEventListener('input', () => { touched = true; update(); }
 byId('calculator').addEventListener('submit', event => { event.preventDefault(); touched = true; update(); });
 byId('example').addEventListener('click', () => {
   const example = { x: 10, y: 0.06, p: 3, r: 3, z: 20 };
-  for (const key of keys) byId(key).value = example[key];
+  setInputs(example);
   touched = true; update();
 });
 byId('clear').addEventListener('click', () => {
-  for (const key of keys) byId(key).value = key === 'p' ? '3' : '';
+  setInputs({ x: '', y: '', p: '3', r: '', z: '' });
   touched = false; update(); byId('x').focus();
 });
 update();
