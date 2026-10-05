@@ -8,9 +8,9 @@
   <title>犬用磷（P）靜脈輸注計算器</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23164e45'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='sans-serif' font-size='42' font-weight='bold' fill='white'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="./rate.css?v=1.1.0">
+  <link rel="stylesheet" href="./rate.css?v=1.2.0">
   <script defer src="./calculator.js"></script>
-  <script defer src="./app.js?v=1.1.0"></script>
+  <script defer src="./app.js?v=1.2.0"></script>
 </head>
 <body>
   <header class="topbar"><span class="brand"><span class="brand-icon" aria-hidden="true">P</span> 犬用輸注換算</span><span class="tag">純數學計算工具</span></header>
@@ -23,19 +23,12 @@
         <div class="section-heading"><h2 id="input-title"><span class="step">01</span> 輸入條件</h2><span>所有欄位皆必填</span></div>
         <form id="calculator" novalidate>
           <div class="field"><label for="x">狗體重 <span>X · kg</span></label><input id="x" name="x" type="number" inputmode="decimal" min="0" step="any" required placeholder="例如 10" aria-describedby="x-error"><span class="field-error" id="x-error"></span></div>
-          <fieldset class="field rate-field" id="y" aria-describedby="rate-hint y-error">
-            <legend>目標磷輸注速率 <span>Y · mmol/kg/hr</span></legend>
-            <div class="rate-options">
-              <label class="rate-option"><input type="radio" name="y" value="0.02" required><span>0.02</span></label>
-              <label class="rate-option"><input type="radio" name="y" value="0.03" required><span>0.03</span></label>
-              <label class="rate-option"><input type="radio" name="y" value="0.04" required><span>0.04</span></label>
-              <label class="rate-option"><input type="radio" name="y" value="0.05" required><span>0.05</span></label>
-              <label class="rate-option"><input type="radio" name="y" value="0.06" required><span>0.06</span></label>
-            </div>
-            <p class="rate-selection" id="rate-selection">請依獸醫處方點選速率</p>
-            <p class="hint" id="rate-hint">以上為使用者指定的選項，並非安全劑量建議。</p>
+          <div class="field rate-field">
+            <label for="y">目標磷輸注速率 <span>Y · mmol/kg/hr</span></label>
+            <input id="y" name="y" type="number" inputmode="decimal" min="0" step="0.01" required placeholder="例如 0.03" aria-describedby="rate-hint y-error">
+            <p class="hint" id="rate-hint">可輸入 0.02、0.03、0.04、0.05、0.06，或依獸醫處方輸入其他速率。</p>
             <span class="field-error" id="y-error"></span>
-          </fieldset>
+          </div>
           <div class="field"><label for="p">磷原液濃度 <span>P · mmol/mL</span></label><input id="p" name="p" type="number" inputmode="decimal" min="0" step="any" required value="3" aria-describedby="stock-hint p-error"><p class="hint" id="stock-hint">預設 3，可修改；請以實際製劑標示核對。</p><span class="field-error" id="p-error"></span></div>
           <div class="field"><label for="r">輸液速率 <span>R · mL/hr</span></label><input id="r" name="r" type="number" inputmode="decimal" min="0" step="any" required placeholder="例如 3" aria-describedby="r-error"><span class="field-error" id="r-error"></span></div>
           <div class="field"><label for="z">最終總液量 <span>Z · mL</span></label><input id="z" name="z" type="number" inputmode="decimal" min="0" step="any" required placeholder="例如 20" aria-describedby="volume-hint z-error"><p class="hint" id="volume-hint"><strong>已包含磷原液體積</strong>，不是先取此體積再加入磷原液。</p><span class="field-error" id="z-error"></span></div>
@@ -56,7 +49,7 @@
       </section>
     </div>
     <details class="panel formulas"><summary>計算公式與單位說明</summary><div><p>X：體重（kg） · Y：目標速率（mmol/kg/hr） · P：磷原液濃度（mmol/mL） · R：輸液速率（mL/hr） · Z：最終總液量（mL）</p><ol><li>每小時所需磷 = X × Y（mmol/hr）</li><li>配製後磷濃度 = X × Y ÷ R（mmol/mL）</li><li>總磷量 = X × Y ÷ R × Z（mmol）</li><li>磷原液體積 V = X × Y ÷ R × Z ÷ P（mL）</li><li>其他輸液體積 = Z − V（mL）</li><li>輸注時間 = Z ÷ R（hr）</li><li>反向驗算 =（V × P ÷ Z）× R ÷ X（mmol/kg/hr）</li></ol><p>例如：10 kg、0.06 mmol/kg/hr、原液 3 mmol/mL、3 mL/hr、最終 20 mL → 磷原液約 1.333 mL ＋ 其他輸液約 18.667 mL。</p></div></details>
-    <footer>僅供數學換算 · 所有輸入在本機瀏覽器計算，不儲存或傳送輸入資料。<br>版本 1.1.0</footer>
+    <footer>僅供數學換算 · 所有輸入在本機瀏覽器計算，不儲存或傳送輸入資料。<br>版本 1.2.0</footer>
   </main>
 </body>
 </html>

@@ -5,22 +5,12 @@ const byId = id => document.getElementById(id);
 let touched = false;
 function setInputs(values) {
   for (const key of keys) {
-    if (key === 'y') {
-      document.querySelectorAll('input[name="y"]').forEach(radio => {
-        radio.checked = radio.value === String(values.y);
-      });
-    } else byId(key).value = values[key];
+    byId(key).value = values[key];
   }
 }
 function update() {
-  const input = Object.fromEntries(keys.map(key => [key, key === 'y'
-    ? document.querySelector('input[name="y"]:checked')?.value || ''
-    : byId(key).value]));
+  const input = Object.fromEntries(keys.map(key => [key, byId(key).value]));
   const result = calculate(input);
-  if (result.errors?.y && !input.y) result.errors.y = '目標磷輸注速率：請選擇一個速率。';
-  byId('rate-selection').textContent = input.y
-    ? `已選擇 ${input.y} mmol/kg/hr`
-    : '請依獸醫處方點選速率';
   for (const key of keys) {
     const error = result.errors?.[key] || '';
     byId(key).setAttribute('aria-invalid', String(Boolean(error && touched)));
